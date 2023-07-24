@@ -1,0 +1,16 @@
+org: sempejunior
+app: hello-sls
+service: image-analysis
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  
+functions:
+  img-analysis:
+    handler: index.main
+    events:
+      - httpApi:
+          path: /analyse
+          method: get
