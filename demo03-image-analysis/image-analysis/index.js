@@ -1,6 +1,8 @@
 const { promises: { readFile } } = require('fs');
 const { RekognitionClient, DetectLabelsCommand } = require('@aws-sdk/client-rekognition');
 const { TranslateClient, TranslateTextCommand } = require('@aws-sdk/client-translate');
+const { get } = require('axios');
+
 
 class Handler {
   constructor({ rekoSvc, translateSvc }) {
@@ -55,12 +57,27 @@ class Handler {
     return finalText.join('\n');
   }
 
+  async getImageBuffer(imageUrl) {
+    console.log("Image URL", imageUrl);
+    const response = await get(imageUrl, {
+      responseType: 'arraybuffer'
+    });
+
+    const buffer = Buffer.from(response.data, 'base64');
+
+    return buffer;
+  }
+
   async main(event) {
     try {
-      const imgBuffer = await readFile('./images/cat.jpg');
+      const { imageUrl } = event.queryStringParameters;
+      //const imgBuffer = await readFile('./images/cat.jpg');
+      console.log('Downloading image...');
+
+      const buffer = await this.getImageBuffer(imageUrl);
 
       console.log('Detecting labels...');
-      const { names, workingItems } = await this.detectImageLabels(imgBuffer);
+      const { names, workingItems } = await this.detectImageLabels(buffer);
 
       console.log('Translation to Portuguese...');
       const texts = await this.translateText(names);
