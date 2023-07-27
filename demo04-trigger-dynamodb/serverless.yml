@@ -1,0 +1,17 @@
+org: sempejunior
+app: heroes
+service: heroes
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  hero-insert:
+    handler: index.heroesInsert
+    events:
+      - httpApi:
+          path: /heroes
+          method: post
+          cors: true 
