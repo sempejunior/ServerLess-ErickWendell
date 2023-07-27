@@ -7,23 +7,28 @@ provider:
   name: aws
   runtime: nodejs18.x
   httpApi:
-    cors: true
+    cors: true`
   environment:
     DYNAMODB_TABLE: Heroes
+  #configurações de permição no arquivo
   iamRoleStatements:
     - Effect: Allow
-      Action: [
-        "dynamodb: GetItem",
-        "dynamodb: UpdateItem",
-        "dynamodb: PutItem"
-      ]
-      Resource: "arn:aws:dynamodb:*:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      Action:
+        - dynamodb: GetItem
+        - dynamodb: UpdateItem
+        - dynamodb: PutItem
+      # Self para dizer que é o contexto do serverless, 
+      # self.provider.region: Pegando a região configurada para a AWS pelo usuário
+      # self:provider.enviroment: Pegando as variáveis do environment
+      Resource: "arn:aws:dynamodb:${provider.region}:*:table/${provider.environment.DYNAMODB_TABLE}"
+
+#Resources serve para quando subir o serverless, sejam criados os recursos que você precisa e configurou neste arquivo.
 resources:
   Resources:
     HeroesTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        TableName: ${provider.environment.DYNAMODB_TABLE}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -37,7 +42,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1 
-
 functions:
   heroes: 
     handler: index.heroesInsert

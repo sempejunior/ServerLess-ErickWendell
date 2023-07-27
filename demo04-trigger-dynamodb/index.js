@@ -1,3 +1,5 @@
+const heroesInsertAtr = require('./src/heroes.insert');
+
 module.exports = {
-  heroesInsert: require('./src/heroes.insert')
+  heroesInsert: heroesInsertAtr
 }
