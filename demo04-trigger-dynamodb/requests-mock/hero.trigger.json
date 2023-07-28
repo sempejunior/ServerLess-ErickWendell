@@ -1,0 +1,40 @@
+{
+    "Records": [
+        {
+            "eventID": "9e64f085359847f3d77a2c22ca6fe0b1",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-east-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1690567797,
+                "Keys": {
+                    "nome": {
+                        "S": "Superman"
+                    },
+                    "id": {
+                        "S": "f5f2d2b0-2d71-11ee-bd0a-1fc69eb6d5d5"
+                    }
+                },
+                "NewImage": {
+                    "createdAt": {
+                        "S": "2023-07-28T18:09:57.595Z"
+                    },
+                    "nome": {
+                        "S": "Superman"
+                    },
+                    "id": {
+                        "S": "f5f2d2b0-2d71-11ee-bd0a-1fc69eb6d5d5"
+                    },
+                    "poder": {
+                        "S": "Voar"
+                    }
+                },
+                "SequenceNumber": "3843500000000011713429381",
+                "SizeBytes": 142,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:us-east-1:582157045911:table/Heroes/stream/2023-07-28T18:06:09.730"
+        }
+    ]
+}

@@ -10,14 +10,17 @@ provider:
     cors: true
   environment:
     DYNAMODB_TABLE: Heroes
-  iamRoleStatements:
-    - Effect: Allow
-      Action: [
-        "dynamodb: GetItem",
-        "dynamodb: UpdateItem",
-        "dynamodb: PutItem"
-      ]
-      Resource: "arn:aws:dynamodb:*:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "dynamodb:GetItem"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:PutItem"
+            - "dynamodb:ListStreams"
+            - "dynamodb:DescribeStream"
+          Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 resources:
   Resources:
     HeroesTable:
@@ -36,8 +39,9 @@ resources:
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
-          WriteCapacityUnits: 1 
-
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
 functions:
   heroes: 
     handler: index.heroesInsert
@@ -45,3 +49,13 @@ functions:
       - httpApi:
           path: /heroes
           method: post
+ #Trigger para pegar tudo que for alterado         
+  hero-trigger:
+    handler: index.heroesTrigger
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - HeroesTable
+              - StreamArn
